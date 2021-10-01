@@ -1,0 +1,31 @@
+parameters:
+  artifactDropName: drop
+
+jobs:
+  - job: Build
+    displayName: Build Scm Common
+    pool:
+      vmImage: ubuntu-latest
+    steps:
+      - task: CopyFiles@2
+        inputs:
+          sourceFolder: day8/terraform
+          contents: |
+            **
+          targetFolder: $(Build.ArtifactStagingDirectory)/terraform
+      - task: CopyFiles@2
+        inputs:
+          sourceFolder: day8/infrastructure/manifests
+          contents: |
+            **
+          targetFolder: $(Build.ArtifactStagingDirectory)/manifests
+      - task: CopyFiles@2
+        inputs:
+          sourceFolder: day8/infrastructure/scripts
+          contents: |
+            install-tf-kubectl-provider.sh
+          targetFolder: $(Build.ArtifactStagingDirectory)/scripts
+      - task: PublishPipelineArtifact@1
+        inputs:
+          targetPath: $(Build.ArtifactStagingDirectory)
+          artifactName: ${{ parameters.artifactDropName }}
